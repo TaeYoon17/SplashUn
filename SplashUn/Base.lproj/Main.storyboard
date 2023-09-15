@@ -220,10 +220,10 @@
             </objects>
             <point key="canvasLocation" x="2367.1755725190837" y="697.18309859154931"/>
         </scene>
-        <!--New SimpleVC-->
+        <!--TaskVC-->
         <scene sceneID="NHh-0w-Vfw">
             <objects>
-                <viewController id="QPN-eQ-OCG" customClass="NewSimpleVC" customModule="SplashUn" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="QPN-eQ-OCG" customClass="TaskVC" customModule="SplashUn" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="TLl-m6-Wnz">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

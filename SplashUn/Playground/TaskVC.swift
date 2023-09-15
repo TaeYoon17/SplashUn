@@ -19,11 +19,26 @@ class TaskVC: UIViewController{
     
     private var locationContinuation: LocationContinuation?
     let locationManager = CLLocationManager()
-    func sharedPostsFromPeer() async throws -> []{
-        try await withCheckedThrowingContinuation({ continuation in
-            self.locationContinuation = continuation
-            self.locationManager.
-        })
+//    func sharedPostsFromPeer() async throws -> []{
+//        try await withCheckedThrowingContinuation({ continuation in
+//            self.locationContinuation = continuation
+//            self.locationManager.
+//        })
+//    }
+    // 간단하게 AsyncSecquence 만드는 방법 (js 제네레이터와 비슷함)
+    let digits = AsyncStream<Int> { continuation in
+        continuation.onTermination = { termination in
+            switch termination{
+            case .cancelled: print("cancelled")
+            case .finished: print("finished")
+            @unknown default:
+                fatalError("추가 된 케이스 등장")
+            }
+        }
+        for digit in 1...10{
+            continuation.yield(digit)
+        }
+        continuation.finish()
     }
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,15 +47,42 @@ class TaskVC: UIViewController{
             make.center.equalToSuperview()
             make.width.height.equalTo(100)
         }
-        Task{[weak self] in
-            print("123456")
-            Task{[weak self] in
-                guard let self else {return}
-                do{
-                    imageView.image = try await fetchThumbnail(for: urlStr)
-                }catch{
-                    print(error)
-                }
+        let numLoader = PicturesLoader(nums: [1,2,3,4,5,6])
+//        print("Num Loader 시작")
+        Task{
+            do{
+                //                for try await num in numLoader{
+                //                    print(num)
+                //                }
+                //                 이미 에러를 던져서 작동하지 않음
+                //                try await numLoader.next()
+                var nums = try await asyncNumber(loader: numLoader)
+//                print(nums)
+            }catch{
+                print("This is Error")
+                print(error)
+            }
+        }
+        linkedListAsyncStream()
+    }
+    func asyncNumber(loader:PicturesLoader) async throws -> [Int] {
+        var nums:[Int] = []
+///        nil이 나올 때 까지 next를 반복한다.
+///        Just like a regular sequence, using an async sequence in this way effectively generates an iterator then calls next() on it repeatedly until it returns nil, at which point the loop finishes.
+        for try await num in loader{
+            nums.append(num)
+        }
+        let num = try await loader.next()
+        print(num)
+        return nums
+    }
+    
+    func fetchUsingAsync(){
+        Task{[weak self] in guard let self else {return}
+            do{
+                imageView.image = try await fetchThumbnail(for: urlStr)
+            }catch{
+                print(error)
             }
         }
     }
@@ -58,20 +100,84 @@ class TaskVC: UIViewController{
         }
         return thumbnail
     }
+    
 }
 
-extension TaskVC: CLLocationManagerDelegate{
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        
+extension TaskVC{
+    //MARK: -- 외부에서 값을 받아서 AsyncStream 만들기
+    func numsToDigitArray(nums: [Int],check:(Int)->Bool,failureHandler: (()->Void))->AsyncStream<Int>{
+        return AsyncStream { continuation in
+            for v in nums{
+                if check(v){ continuation.yield(v) }
+                else {failureHandler()}
+            }
+        }
     }
-    
-    
+    //MARK: -- 연결 리스트 AsyncStream으로 구현하기, 한번에 전송하고 싶은 list의 계수를 설정할 수 있다.
+    func linkedListAsyncStream(singleListCount: Int = 2){
+        print(#function)
+        // enum을 재귀적으로 관리하기 위한 키워드 indirect
+        indirect enum LinkedListNode<T>{
+            case value(element: T, next: LinkedListNode<T>)
+            case end
+        }
+        let sixth = LinkedListNode.value(element: "G", next: .end)
+        let fifth = LinkedListNode.value(element: "F", next: sixth)
+        let fourth = LinkedListNode.value(element: "E", next: fifth)
+        let third = LinkedListNode.value(element: "D", next: fourth)
+        let second = LinkedListNode.value(element: "C", next: third)
+        let first = LinkedListNode.value(element: "B", next: second)
+        let head = LinkedListNode.value(element: "A", next: first)
+        var generator = AsyncStream<[String]>{ continuation in
+            var iter = head
+            var num = 0
+            var datas: [String] = []
+            while true{
+                switch iter{
+                case .end:
+                    if !datas.isEmpty{ continuation.yield(datas) }
+                    continuation.finish()
+                    return
+                case .value(element: let val, next: let next):
+                    if datas.count > singleListCount {
+                        continuation.yield(datas)
+                        num = 0
+                        datas.removeAll()
+                    }else{
+                        num += 1
+                        datas.append(val)
+                        iter = next
+                    }
+                }
+            }
+        }
+        var iter = generator.makeAsyncIterator()
+        Task{
+            while let val = await iter.next(){
+                print(val)
+            }
+        }
+    }
 }
-extension CLLocationManager{
-    func _locationManager(_ manager: CLLocationManager) async throws -> [CLLocation]{
 
-//        return try await withCheckedContinuation<LocationContinuation>{ continuation in
-//
-//        }
+
+/// Build your own AsyncSequence
+/// 1. Callbacks
+/// 2. Some Delegates
+//MARK: -- AsyncSequence 만들기
+enum AsyncError: Error{
+    case next
+}
+class PicturesLoader: AsyncSequence, AsyncIteratorProtocol{
+    typealias AsyncIterator = PicturesLoader
+    typealias Element = Int
+    var nums: [Int] = []
+    init(nums:[Int]){
+        self.nums = nums
+    }
+    func makeAsyncIterator() -> PicturesLoader { self }
+    
+    func next() async throws -> Int? {
+        nums.popLast()
     }
 }
