@@ -1,0 +1,10 @@
+/* 
+  InfoPlist.strings
+  SplashUn
+
+  Created by 김태윤 on 2023/09/11.
+  
+*/
+
+"NSLocationWhenInUseUsageDescription" = "나 이것 좀 해줘잉";
+"CFBundleDisplayName" = "스플래시언"; // 앱 아이콘 대응

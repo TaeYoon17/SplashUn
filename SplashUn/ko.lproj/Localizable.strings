@@ -1,0 +1,12 @@
+/* 
+  Localizable.strings
+  SplashUn
+
+  Created by 김태윤 on 2023/09/11.
+  
+*/
+"nickname_placeholder" = "닉네임을 입력해라라라랄";
+
+"nickname_result" = "당신의 닉네임은 %@ %@ %@입니다";
+
+"age_result" = "당신의 나이는 %d살 입니다";
