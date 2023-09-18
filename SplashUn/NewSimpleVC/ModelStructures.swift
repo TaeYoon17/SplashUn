@@ -27,8 +27,10 @@ class AnyModelStore<Model: Identifiable>: ModelStore {
     func fetchByID(_ id: Model.ID) -> Model {
         return self.models[id]!
     }
+    func insertModel(item: Model){
+        models[item.id] = item
+    }
 }
-
 
 // 배열 익스텐션 -> 원소들이 Identifiable을 준수하는 것들에 적용되는 함수
 extension Sequence where Element: Identifiable {

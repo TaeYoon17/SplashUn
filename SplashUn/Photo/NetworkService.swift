@@ -25,11 +25,9 @@ class NetworkService {
                 print(error)
                 return
             }
-            
             guard let response = response as? HTTPURLResponse, (200...500).contains(response.statusCode) else {
                 return
             }
-            
             do {
                 let result = try JSONDecoder().decode(Photo.self, from: data!)
                 completion(result)

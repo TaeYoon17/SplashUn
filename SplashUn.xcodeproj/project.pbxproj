@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6309B2452AB8218B00F73839 /* PhotoVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6309B2442AB8218B00F73839 /* PhotoVM.swift */; };
 		631DA6ED2AB0BCA700DAE15B /* TapAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 631DA6EC2AB0BCA700DAE15B /* TapAnimationView.swift */; };
 		635100B42AAFED4C0067E1C9 /* LogInVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 635100B32AAFED4C0067E1C9 /* LogInVC.swift */; };
 		635100B62AAFF2FE0067E1C9 /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 635100B52AAFF2FE0067E1C9 /* Observable.swift */; };
@@ -23,7 +24,10 @@
 		638D4B6B2AB36CB000681D58 /* CombinePlayground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 638D4B6A2AB36CB000681D58 /* CombinePlayground.swift */; };
 		638D4B6D2AB36E2D00681D58 /* TaskVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 638D4B6C2AB36E2D00681D58 /* TaskVC.swift */; };
 		638D4B6F2AB372C400681D58 /* MakeSyncToAsync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 638D4B6E2AB372C400681D58 /* MakeSyncToAsync.swift */; };
+		63BA473E2AB7D34400417F44 /* NumberVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63BA473D2AB7D34400417F44 /* NumberVC.swift */; };
+		63BA47622AB7EC4400417F44 /* NewSimpleVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63BA47612AB7EC4400417F44 /* NewSimpleVM.swift */; };
 		63CC00822AB3DCB1007FD2DD /* CopyAndWrite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63CC00812AB3DCB1007FD2DD /* CopyAndWrite.swift */; };
+		63CC00842AB47380007FD2DD /* StructuredAsync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63CC00832AB47380007FD2DD /* StructuredAsync.swift */; };
 		63D435AB2AB28C9900EF8A43 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 63D435AA2AB28C9900EF8A43 /* SnapKit */; };
 		63D435AD2AB28CA300EF8A43 /* LottoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D435AC2AB28CA300EF8A43 /* LottoVC.swift */; };
 		63D435AF2AB28CA900EF8A43 /* LottoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63D435AE2AB28CA900EF8A43 /* LottoView.swift */; };
@@ -42,6 +46,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6309B2442AB8218B00F73839 /* PhotoVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoVM.swift; sourceTree = "<group>"; };
 		631DA6EC2AB0BCA700DAE15B /* TapAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapAnimationView.swift; sourceTree = "<group>"; };
 		635100B32AAFED4C0067E1C9 /* LogInVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInVC.swift; sourceTree = "<group>"; };
 		635100B52AAFF2FE0067E1C9 /* Observable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
@@ -58,7 +63,10 @@
 		638D4B6A2AB36CB000681D58 /* CombinePlayground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombinePlayground.swift; sourceTree = "<group>"; };
 		638D4B6C2AB36E2D00681D58 /* TaskVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskVC.swift; sourceTree = "<group>"; };
 		638D4B6E2AB372C400681D58 /* MakeSyncToAsync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MakeSyncToAsync.swift; sourceTree = "<group>"; };
+		63BA473D2AB7D34400417F44 /* NumberVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberVC.swift; sourceTree = "<group>"; };
+		63BA47612AB7EC4400417F44 /* NewSimpleVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewSimpleVM.swift; sourceTree = "<group>"; };
 		63CC00812AB3DCB1007FD2DD /* CopyAndWrite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopyAndWrite.swift; sourceTree = "<group>"; };
+		63CC00832AB47380007FD2DD /* StructuredAsync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StructuredAsync.swift; sourceTree = "<group>"; };
 		63D435AC2AB28CA300EF8A43 /* LottoVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottoVC.swift; sourceTree = "<group>"; };
 		63D435AE2AB28CA900EF8A43 /* LottoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottoView.swift; sourceTree = "<group>"; };
 		63D435B12AB2A9AF00EF8A43 /* NewSimpleVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewSimpleVC.swift; sourceTree = "<group>"; };
@@ -107,6 +115,7 @@
 				635100B92AAFFE090067E1C9 /* SampleVC.swift */,
 				635100BB2AB0016E0067E1C9 /* SampleVM.swift */,
 				635100BD2AB00E9F0067E1C9 /* LogInVM.swift */,
+				63BA473D2AB7D34400417F44 /* NumberVC.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -117,6 +126,7 @@
 				635100C02AB02A750067E1C9 /* NetworkService.swift */,
 				635100C22AB02A800067E1C9 /* Photo.swift */,
 				635100C42AB02BAC0067E1C9 /* PhotoVC.swift */,
+				6309B2442AB8218B00F73839 /* PhotoVM.swift */,
 			);
 			path = Photo;
 			sourceTree = "<group>";
@@ -138,6 +148,7 @@
 				638D4B6C2AB36E2D00681D58 /* TaskVC.swift */,
 				638D4B6E2AB372C400681D58 /* MakeSyncToAsync.swift */,
 				63CC00812AB3DCB1007FD2DD /* CopyAndWrite.swift */,
+				63CC00832AB47380007FD2DD /* StructuredAsync.swift */,
 			);
 			path = Playground;
 			sourceTree = "<group>";
@@ -156,6 +167,7 @@
 			children = (
 				63D435B12AB2A9AF00EF8A43 /* NewSimpleVC.swift */,
 				63D435B32AB2A9ED00EF8A43 /* ModelStructures.swift */,
+				63BA47612AB7EC4400417F44 /* NewSimpleVM.swift */,
 			);
 			path = NewSimpleVC;
 			sourceTree = "<group>";
@@ -283,6 +295,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				63F474D12AAEAD40002C8CF6 /* SearchImageVC.swift in Sources */,
+				63CC00842AB47380007FD2DD /* StructuredAsync.swift in Sources */,
+				63BA47622AB7EC4400417F44 /* NewSimpleVM.swift in Sources */,
 				63F474B82AAE9924002C8CF6 /* ViewController.swift in Sources */,
 				635100BA2AAFFE090067E1C9 /* SampleVC.swift in Sources */,
 				638D4B6D2AB36E2D00681D58 /* TaskVC.swift in Sources */,
@@ -300,8 +314,10 @@
 				635100B82AAFF63C0067E1C9 /* ObserverPattern.swift in Sources */,
 				635100BC2AB0016E0067E1C9 /* SampleVM.swift in Sources */,
 				63D435AF2AB28CA900EF8A43 /* LottoView.swift in Sources */,
+				63BA473E2AB7D34400417F44 /* NumberVC.swift in Sources */,
 				638D4B6B2AB36CB000681D58 /* CombinePlayground.swift in Sources */,
 				635100BE2AB00E9F0067E1C9 /* LogInVM.swift in Sources */,
+				6309B2452AB8218B00F73839 /* PhotoVM.swift in Sources */,
 				63D435B22AB2A9AF00EF8A43 /* NewSimpleVC.swift in Sources */,
 				635100C12AB02A750067E1C9 /* NetworkService.swift in Sources */,
 				63D435B42AB2A9ED00EF8A43 /* ModelStructures.swift in Sources */,

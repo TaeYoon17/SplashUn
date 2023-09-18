@@ -67,8 +67,7 @@ class TaskVC: UIViewController{
     }
     func asyncNumber(loader:PicturesLoader) async throws -> [Int] {
         var nums:[Int] = []
-///        nil이 나올 때 까지 next를 반복한다.
-///        Just like a regular sequence, using an async sequence in this way effectively generates an iterator then calls next() on it repeatedly until it returns nil, at which point the loop finishes.
+ 
         for try await num in loader{
             nums.append(num)
         }
@@ -121,15 +120,11 @@ extension TaskVC{
             case value(element: T, next: LinkedListNode<T>)
             case end
         }
-        let sixth = LinkedListNode.value(element: "G", next: .end)
-        let fifth = LinkedListNode.value(element: "F", next: sixth)
-        let fourth = LinkedListNode.value(element: "E", next: fifth)
-        let third = LinkedListNode.value(element: "D", next: fourth)
-        let second = LinkedListNode.value(element: "C", next: third)
-        let first = LinkedListNode.value(element: "B", next: second)
-        let head = LinkedListNode.value(element: "A", next: first)
-        var generator = AsyncStream<[String]>{ continuation in
-            var iter = head
+        let lists = ["A","B","C","D","E","F","G"].reversed().map{$0}.mapWithPrev { str, prev in
+            LinkedListNode.value(element: str, next: prev ?? .end)
+        }
+        var generator = AsyncStream<[String]>{[weak self] continuation in
+            var iter = lists.last!
             var num = 0
             var datas: [String] = []
             while true{
@@ -158,6 +153,14 @@ extension TaskVC{
             }
         }
     }
+    // Legacy...
+    //        let sixth = LinkedListNode.value(element: "G", next: .end)
+    //        let fifth = LinkedListNode.value(element: "F", next: sixth)
+    //        let fourth = LinkedListNode.value(element: "E", next: fifth)
+    //        let third = LinkedListNode.value(element: "D", next: fourth)
+    //        let second = LinkedListNode.value(element: "C", next: third)
+    //        let first = LinkedListNode.value(element: "B", next: second)
+    //        let head = LinkedListNode.value(element: "A", next: first)
 }
 
 
@@ -179,5 +182,18 @@ class PicturesLoader: AsyncSequence, AsyncIteratorProtocol{
     
     func next() async throws -> Int? {
         nums.popLast()
+    }
+}
+extension Array{
+    func mapWithPrev<U>(hanlder:(Element,U?)->U) -> [U]{
+        var newList:[U] = []
+        var flag = false
+        var prev:U? = nil
+        self.forEach { element in
+            let now = hanlder(element,prev)
+            newList.append(now)
+            prev = now
+        }
+        return newList
     }
 }
