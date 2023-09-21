@@ -7,10 +7,11 @@
 
 import Foundation
 import Alamofire
+typealias AFRoutable = Routable & URLRequestConvertible
 protocol Routable{
     typealias Query = [String: String]
     var baseURL: String { get }
-    var endPoint: URL { get }
+    var endPoint: String { get }
     var header: HTTPHeaders{ get }
     var method: HTTPMethod { get }
     var query: Query { get }

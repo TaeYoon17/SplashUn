@@ -27,56 +27,48 @@ struct Item:Identifiable{
 class NewSimpleVC: UIViewController{
     var dataSource: UICollectionViewDiffableDataSource<Section.ID,Item.ID>!
     let collectionView = UICollectionView(frame: .zero, collectionViewLayout: Layout)
-    let sectionStore = AnyModelStore<Section>([.init(id: .main, itemsID: (0...30).map{$0}),
-                                               .init(id: .footer, itemsID: (31...50).map{$0})])
-    let itemStore = AnyModelStore<Item>((0...50).map{Item(id: $0)})
+//    let sectionStore = AnyModelStore<Section>([.init(id: .main, itemsID: (0...30).map{$0}),
+//                                               .init(id: .footer, itemsID: (31...50).map{$0})])
+//    let itemStore = AnyModelStore<Item>((0...50).map{Item(id: $0)})
+    let vm = NewSimpleVM()
     var subsription = Set<AnyCancellable>()
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(collectionView)
-        collectionView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
+        collectionView.snp.makeConstraints { $0.edges.equalToSuperview() }
         configureCollectionView()
-        Task.detached(priority: .background){ [weak self] in
-            guard let self else {return}
-            try await Task.sleep(for: .seconds(2))
-            print("작업 시작")
-            itemStore.insertModel(item: .init(id: 31))
-            var section = sectionStore.fetchByID(.main)
-            section.itemsID.append(31)
-            sectionStore.insertModel(item: section)
-            print("이거 실행 됨!!")
-            // 함수 자체를 mainActor로 지정해서 Task 내부는 background thread지만 이 함수는 main thread에서 실행된다.
-            await self.reloadSnapshot()
-        }
+        vm.$sectionStore.sink { [ weak self] val in
+            Task{
+                self?.reloadSnapshot(itemIDs: val.fetchByID(.main).itemsID)
+            }
+        }.store(in: &subsription)
     }
     var image = UIImage(systemName: "heart")
     func configureCollectionView(){
-        collectionView.prefetchDataSource = self
+//        collectionView.prefetchDataSource = self
         collectionView.delegate = self
         let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell,Item.ID> {[weak self] cell, indexPath, itemIdentifier in
-            guard let item = self?.itemStore.fetchByID(itemIdentifier) else {return}
+            guard let item = self?.vm.itemStore.fetchByID(itemIdentifier) else {return}
             var config = cell.defaultContentConfiguration()
             config.attributedText = .init(string: item.title, attributes: [
                 NSAttributedString.Key.font : UIFont.preferredFont(forTextStyle: .headline)
             ])
-            
-            var accessoryConfig = UICellAccessory.CustomViewConfiguration(customView: {
-                var isLike = true
-               let button = UIButton()
-                button.tintColor = .systemRed
-                button.setImage(.init(systemName: isLike ? "heart.fill" : "heart"), for: .normal)
-                button.addAction(.init(handler: {[weak self] _ in
-                    isLike.toggle()
+            Task{
+                var accessoryConfig = UICellAccessory.CustomViewConfiguration(customView: {
+                    var isLike = true
+                    let button = UIButton()
+                    button.tintColor = .systemRed
                     button.setImage(.init(systemName: isLike ? "heart.fill" : "heart"), for: .normal)
-                }), for: .touchUpInside)
-                
-            return button
-            }(), placement: .leading())
-            let accessory: UICellAccessory = .customView(configuration: accessoryConfig)
-            cell.accessories = [accessory]
-            cell.contentConfiguration = config
+                    button.addAction(.init(handler: {[weak self] _ in
+                        isLike.toggle()
+                        button.setImage(.init(systemName: isLike ? "heart.fill" : "heart"), for: .normal)
+                    }), for: .touchUpInside)
+                    return button
+                }(), placement: .leading())
+                let accessory: UICellAccessory = .customView(configuration: accessoryConfig)
+                cell.accessories = [accessory]
+                cell.contentConfiguration = config
+            }
         }
         dataSource = UICollectionViewDiffableDataSource<Section.ID,Item.ID>(collectionView: collectionView, cellProvider: { collectionView, indexPath, itemIdentifier in
             collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: itemIdentifier)
@@ -84,15 +76,15 @@ class NewSimpleVC: UIViewController{
         dataSource.apply({
             var snapshot = NSDiffableDataSourceSnapshot<Section.ID,Item.ID>()
             snapshot.appendSections([.main])
-            snapshot.appendItems(sectionStore.fetchByID(.main).itemsID,toSection: .main)
+            snapshot.appendItems(vm.sectionStore.fetchByID(.main).itemsID,toSection: .main)
             return snapshot
         }(),animatingDifferences: true)
     }
-    @MainActor func reloadSnapshot(){
+    @MainActor func reloadSnapshot(itemIDs: [Item.ID]){
         dataSource.apply({
             var snapshot = NSDiffableDataSourceSnapshot<Section.ID,Item.ID>()
             snapshot.appendSections([.main])
-            snapshot.appendItems(sectionStore.fetchByID(.main).itemsID,toSection: .main)
+            snapshot.appendItems(itemIDs,toSection: .main)
             return snapshot
         }(),animatingDifferences: true)
     }
@@ -100,19 +92,28 @@ class NewSimpleVC: UIViewController{
 
 extension NewSimpleVC: UICollectionViewDataSourcePrefetching,UICollectionViewDelegate{
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-        indexPaths.forEach { indexPath in
-            guard let data = self.dataSource.itemIdentifier(for: indexPath) else {return}
-            setPostNeedsUpdate(data)
+        //        indexPaths.forEach { indexPath in
+        //            guard let data = self.dataSource.itemIdentifier(for: indexPath) else {return}
+        //            setPostNeedsUpdate(data)
+        //        }
+        let datas = indexPaths.compactMap { indexPath in
+            self.dataSource.itemIdentifier(for: indexPath)
         }
+        setPostNeedsUpdate(itemIDs: datas)
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
     }
-    private func setPostNeedsUpdate(_ id: Item.ID) {// id만 알아도 알아서 reconfigure이 가능하다.
+    @MainActor private func setPostNeedsUpdate(_ id: Item.ID) {// id만 알아도 알아서 reconfigure이 가능하다.
         print(#function,"\(id)번째 미리 가져오기")
         var snapshot = self.dataSource.snapshot()
         snapshot.reconfigureItems([id])
         self.dataSource.apply(snapshot, animatingDifferences: true)
+    }
+    @MainActor private func setPostNeedsUpdate(itemIDs: [Item.ID]) {
+        var snapshot = self.dataSource.snapshot()
+        snapshot.reconfigureItems(itemIDs)
+        self.dataSource.apply(snapshot,animatingDifferences: true)
     }
     
 }

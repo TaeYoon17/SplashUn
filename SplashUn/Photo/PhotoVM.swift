@@ -10,10 +10,10 @@ class PhotoVM{
     var data = Observable(Array<PhotoResult>())
     @Published var searchText = ""
     func searchPhoto(query: String){
-        NetworkService.shared.searchPhoto(query: query){[weak self] val in
-            guard let val,let self, let result = val.results else {return}
-            data.value = result
-        }
+//        NetworkService.shared.searchPhoto(query: query){[weak self] val in
+//            guard let val,let self, let result = val.results else {return}
+//            data.value = result
+//        }
     }
     var numberOfRowsInSection:Int{
         data.value?.count ?? 0

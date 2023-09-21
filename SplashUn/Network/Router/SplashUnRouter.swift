@@ -9,17 +9,16 @@ import Foundation
 import Alamofire
 enum SplashUnRouter: URLRequestConvertible,Routable{
     typealias Query = [String:String]
-    private static let key = "key"
+    private static let key = "wFP2oSo7S-Vg8ftxR2SV36MB1ib62AS8er23JwssgxQ"
     typealias Queries = [String:String]
     var baseURL:String {"https://www.naver.com" }
     case search(query: String),random,photo(id: String)
-    var endPoint: URL{
-        let str = switch self{
-        case .photo(let id): baseURL + "photos/\(id)"
-        case .random: baseURL + "photos/random"
-        case .search: baseURL + "search/photos"
+    var endPoint: String {
+        return switch self{
+        case .photo(let id): "photos/\(id)"
+        case .random: "photos/random"
+        case .search: "search/photos"
         }
-        return URL(string: str)!
     }
     var header: HTTPHeaders{
         return ["Authorization" : "Client-ID \(Self.key)" ]
@@ -34,9 +33,14 @@ enum SplashUnRouter: URLRequestConvertible,Routable{
         }
     }
     func asURLRequest() throws -> URLRequest {
-        var request = URLRequest(url: endPoint)
+        guard var url = URL(string: baseURL)?.appendingPathComponent(endPoint) else {
+            throw CustomError.badRequest
+        }
+        var request = URLRequest(url: url)
         request.method = method
         request.headers = header
+        //MARK: -- 쿼리를 url 영역에 넘기는 방법
+        request = try URLEncodedFormParameterEncoder(destination: .methodDependent).encode(query, into: request)
         return request
     }
 }
